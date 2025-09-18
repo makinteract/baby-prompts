@@ -18,12 +18,12 @@ Here are some examples of how to use different prompting techniques:
 
 > Note  
 > For the following tutorials, I will use the following function to print out the results
-
-```js
-function printOutText({ output_text }) {
-  console.log(output_text);
-}
-```
+>
+> ```js
+> function printOutText({ output_text }) {
+>   console.log(output_text);
+> }
+> ```
 
 ### Zero shot prompting
 
