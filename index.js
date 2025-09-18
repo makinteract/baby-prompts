@@ -12,7 +12,7 @@ export const developer = (text = '') => ({ role: 'developer', content: text });
 export const user = (text = '') => ({ role: 'user', content: text });
 
 // Prompts
-export async function oneShotPrompt(instructions, userInput, options = {}) {
+export async function zeroShotPrompt(instructions, userInput, options = {}) {
   const response = await client.responses.create({
     model: 'gpt-4.1-mini',
     instructions,
@@ -22,7 +22,7 @@ export async function oneShotPrompt(instructions, userInput, options = {}) {
   return response;
 }
 
-export async function fewShotsPrompt(messages, options = {}) {
+export async function fewShotPrompt(messages, options = {}) {
   const response = await client.responses.create({
     model: 'gpt-4.1-mini',
     input: messages,

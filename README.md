@@ -1,11 +1,23 @@
 # Baby Prompts
 
-Install the library by typing `npm install baby-prompts`.
+Providing super basic prompt techniques and chains for OpenAI's response API.
+
+## Installation
+
+Install the library by typing
+
+`npm install baby-prompts`
 
 ## Usage
 
-> Note
-> For the following tutorials I will use the following function to print out the results
+Here are some examples of how to use different prompting techniques:
+
+- Zero-shot prompting
+- Few-shot prompting
+- Prompt chains
+
+> Note  
+> For the following tutorials, I will use the following function to print out the results
 
 ```js
 function printOutText({ output_text }) {
@@ -13,21 +25,21 @@ function printOutText({ output_text }) {
 }
 ```
 
-### One shot prompting
+### Zero shot prompting
 
 ```js
-import { oneShotPrompt } from 'baby-prompts';
+import { zeroShotPrompt } from 'baby-prompts';
 
-// oneShotPrompt('Instructions', 'Prompt').then(printOutText);
-oneShotPrompt('You are a helpful assistant', 'Hi').then(printOutText);
+// zeroShotPrompt('Instructions', 'Prompt').then(printOutText);
+zeroShotPrompt('You are a helpful assistant', 'Hi').then(printOutText);
 ```
 
 ### Few shots prompting
 
 ```js
-import { fewShotsPrompt, user, assistant, developer } from 'baby-prompts';
+import { fewShotPrompt, user, assistant, developer } from 'baby-prompts';
 
-fewShotsPrompt([
+fewShotPrompt([
   developer('You are not a good calculator, off of 1'), //
   user('What is 2 + 2?'),
   assistant('5'),
@@ -51,12 +63,21 @@ promptChain(
 )().then(printOutText);
 ```
 
-## Change options
-
-You may pass different models and options in the `options` paramter. Here an example
+or this way
 
 ```js
-oneShotPrompt(
+promptChain(
+  promptLink('What is 2 + 2?')
+  //...
+)('You are a calculator').then(printOutText);
+```
+
+## Change options
+
+You may pass different models and options in the `options` parameter. Here is an example:
+
+```js
+zeroShotPrompt(
   'You are a helpful assistant that translates English to French.',
   'Translate the following English text to French: "Hello, how are you?"',
   {
@@ -65,3 +86,7 @@ oneShotPrompt(
   }
 ).then(printOutText);
 ```
+
+## Requirments
+
+This code requires that you have a `.env` file with the variable `OPENAI_API_KEY` set to your own OpenAI API key. You can find an API key [here](https://platform.openai.com/api-keys).

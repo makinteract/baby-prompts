@@ -1,7 +1,7 @@
 {
   "name": "baby-prompts",
-  "version": "1.0.3",
-  "description": "Providing basic prompt and chains with OpenAI's API",
+  "version": "1.0.4",
+  "description": "Providing super basic prompt techniques and chains for OpenAI's response API",
   "main": "index.js",
   "type": "module",
   "repository": {
