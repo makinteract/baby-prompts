@@ -50,3 +50,18 @@ promptChain(
   promptLink('Say the result in Italian.')
 )().then(printOutText);
 ```
+
+## Change options
+
+You may pass different models and options in the `options` paramter. Here an example
+
+```js
+oneShotPrompt(
+  'You are a helpful assistant that translates English to French.',
+  'Translate the following English text to French: "Hello, how are you?"',
+  {
+    model: 'gpt-5',
+    reasoning: { effort: 'medium' },
+  }
+).then(printOutText);
+```
