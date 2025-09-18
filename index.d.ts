@@ -13,21 +13,21 @@ export interface Response {
   [key: string]: unknown;
 }
 
-export function tap(x: Response): Response;
-export function assistant(text?: string): Message;
-export function developer(text?: string): Message;
-export function user(text?: string): Message;
+export function tap(response: Response): Response | never;
+export function assistant(text?: string): Message | never;
+export function developer(text?: string): Message | never;
+export function user(text?: string): Message | never;
 
 export function zeroShotPrompt(
   instructions: string,
   userInput: string,
   options?: Options
-): Promise<Response>;
+): Promise<Response> | never;
 
 export function fewShotPrompt(
   messages: Message[],
   options?: Options
-): Promise<Response>;
+): Promise<Response> | never;
 
 // type PromptFunction = (prompt: readonly string) => Promise<Response>;
 // type PromptLinkFunction = (prompt: readonly string) => LinkFunction;

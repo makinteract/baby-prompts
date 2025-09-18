@@ -1,18 +1,50 @@
 import 'dotenv/config';
+import { z } from 'zod';
+
 import OpenAI from 'openai';
 const client = new OpenAI();
 
-// Helpers
-export const tap = (x) => {
-  console.log(x.output_text);
-  return x;
+// Schemas
+const MessageSchema = z.object({
+  role: z.enum(['user', 'assistant', 'developer']),
+  content: z.string(),
+});
+
+const OptionsSchema = z.object({
+  model: z.string().nonempty().optional(),
+});
+
+const ResponseSchema = z.object({
+  output_text: z.string(),
+});
+
+const InputText = z.string();
+
+// Utilities
+export const tap = (response) => {
+  ResponseSchema.parse(response);
+  console.log(response.output_text);
+  return response;
 };
-export const assistant = (text = '') => ({ role: 'assistant', content: text });
-export const developer = (text = '') => ({ role: 'developer', content: text });
-export const user = (text = '') => ({ role: 'user', content: text });
+export const assistant = (text = '') => {
+  InputText.parse(text);
+  return { role: 'assistant', content: text };
+};
+export const developer = (text = '') => {
+  InputText.parse(text);
+  return { role: 'developer', content: text };
+};
+export const user = (text = '') => {
+  InputText.parse(text);
+  return { role: 'user', content: text };
+};
 
 // Prompts
 export async function zeroShotPrompt(instructions, userInput, options = {}) {
+  InputText.parse(instructions);
+  InputText.parse(userInput);
+  OptionsSchema.parse(options);
+
   const response = await client.responses.create({
     model: 'gpt-4.1-mini',
     instructions,
@@ -23,6 +55,9 @@ export async function zeroShotPrompt(instructions, userInput, options = {}) {
 }
 
 export async function fewShotPrompt(messages, options = {}) {
+  z.array(MessageSchema).parse(messages);
+  OptionsSchema.parse(options);
+
   const response = await client.responses.create({
     model: 'gpt-4.1-mini',
     input: messages,
@@ -32,10 +67,14 @@ export async function fewShotPrompt(messages, options = {}) {
 }
 
 export function promptLink(userInput, options = {}) {
+  z.union([InputText, z.array(MessageSchema)]).parse(userInput);
+  OptionsSchema.parse(options);
+
+  const prompt = typeof userInput === 'string' ? [user(userInput)] : userInput;
   return async function ({ output_text: prevOutput }) {
     const response = await client.responses.create({
       model: 'gpt-4.1-mini',
-      input: [assistant(prevOutput), user(userInput)],
+      input: [assistant(prevOutput), ...prompt],
       ...options,
     });
     return response;
@@ -44,5 +83,5 @@ export function promptLink(userInput, options = {}) {
 
 export const promptChain =
   (...fns) =>
-  (x = '') =>
-    fns.reduce((p, f) => p.then(f), Promise.resolve(x));
+  (userInput = '') =>
+    fns.reduce((p, f) => p.then(f), Promise.resolve(userInput));
