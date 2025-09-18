@@ -29,12 +29,12 @@ function printOutText({ output_text }) {
 
 ```js
 import { zeroShotPrompt } from 'baby-prompts';
-
-// zeroShotPrompt('Instructions', 'Prompt').then(printOutText);
 zeroShotPrompt('You are a helpful assistant', 'Hi').then(printOutText);
 ```
 
 ### Few shots prompting
+
+Function signature: `function fewShotPrompt(messages, options = {}) `
 
 ```js
 import { fewShotPrompt, user, assistant, developer } from 'baby-prompts';
