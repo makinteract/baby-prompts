@@ -18,7 +18,7 @@ const ResponseSchema = z.object({
   output_text: z.string(),
 });
 
-const InputText = z.string();
+const InputText = z.string().nonempty();
 
 // Utilities
 export const tap = (response) => {
@@ -69,12 +69,19 @@ export async function fewShotPrompt(messages, options = {}) {
 export function promptLink(userInput, options = {}) {
   z.union([InputText, z.array(MessageSchema)]).parse(userInput);
   OptionsSchema.parse(options);
-
   const prompt = typeof userInput === 'string' ? [user(userInput)] : userInput;
-  return async function ({ output_text: prevOutput }) {
+
+  return async function (prevOutput) {
+    z.union([InputText, ResponseSchema]).parse(prevOutput);
+    const assistantMessage =
+      typeof prevOutput === 'string' ? prevOutput : prevOutput.output_text;
+
+    let input = prompt;
+    if (prevOutput) input = [assistant(assistantMessage), ...prompt];
+
     const response = await client.responses.create({
       model: 'gpt-4.1-mini',
-      input: [assistant(prevOutput), ...prompt],
+      input,
       ...options,
     });
     return response;
@@ -83,5 +90,5 @@ export function promptLink(userInput, options = {}) {
 
 export const promptChain =
   (...fns) =>
-  (userInput = '') =>
+  (userInput = 'You are a helpful assistant') =>
     fns.reduce((p, f) => p.then(f), Promise.resolve(userInput));

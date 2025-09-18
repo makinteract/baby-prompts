@@ -29,7 +29,9 @@ function printOutText({ output_text }) {
 
 ```js
 import { zeroShotPrompt } from 'baby-prompts';
-zeroShotPrompt('You are a helpful assistant', 'Hi').then(printOutText);
+zeroShotPrompt('You are a funny assistant', 'Tell me a joke!').then(
+  printOutText
+);
 ```
 
 ### Few shots prompting
@@ -63,13 +65,19 @@ promptChain(
 )().then(printOutText);
 ```
 
-or this way
+Or here a more complex example.
 
 ```js
 promptChain(
-  promptLink('What is 2 + 2?')
-  //...
-)('You are a calculator').then(printOutText);
+  promptLink('What is 2 + 2?'), // you can use a string
+  tap, // use tap to see intermediate steps
+  promptLink([
+    // you can also use an array of messages
+    developer('Be brief and just give the number.'),
+    user('Say the result in Italian.'),
+  ])
+)('You are an helpful assistant.') // The initial instructions
+  .then(printOutText);
 ```
 
 ## Change options

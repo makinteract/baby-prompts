@@ -29,34 +29,11 @@ export function fewShotPrompt(
   options?: Options
 ): Promise<Response> | never;
 
-// type PromptFunction = (prompt: readonly string) => Promise<Response>;
-// type PromptLinkFunction = (prompt: readonly string) => LinkFunction;
-// type LinkFunction = (previousContext: Message) => Promise<Response>;
+export type PromptLinkFunction = (
+  userInput: string | Message[],
+  options?: Options
+) => (prevOutput?: string | Response) => Promise<Response> | never;
 
-/**
- * A chain of prompt functions that are executed in sequence (pipe)
- * @param functions the prompt functions to chain
- */
-// export function chain(...functions: LinkFunction[]): Promise<Response>;
-
-/**
- * Get a prompt function that uses the provided model.
- * @param promptOptions The options to use for the prompt.
- * @param thread The thread of messages to use as context.
- * @returns A prompt function that uses the provided model.
- */
-// export function getPrompt(
-//   promptOptions: readonly Options,
-//   thread?: Message[]
-// ): PromptFunction;
-
-/**
- * Get a chainable prompt function that uses the provided model and the previous context.
- * @param promptOptions The options to use for the prompt.
- * @param thread The thread of messages to use as context.
- * @returns A chainable prompt function that uses the provided model and the previous context.
- */
-export function getPromptLink(
-  promptOptions: readonly Options,
-  thread?: Message[]
-): PromptLinkFunction;
+const promptChain: (
+  ...fns: PromptLinkFunction[]
+) => (userInput?: string) => Promise<Response> | never;
