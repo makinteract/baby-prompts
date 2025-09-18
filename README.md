@@ -5,7 +5,7 @@ Install the library by typing `npm install baby-prompts`.
 ## Usage
 
 > Note
-> For the following tutorials I will use the following function print out the results
+> For the following tutorials I will use the following function to print out the results
 
 ```js
 function printOutText({ output_text }) {

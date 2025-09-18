@@ -1,10 +1,13 @@
 {
   "name": "baby-prompts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "type": "module",
-  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/makinteract/baby-prompts.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
