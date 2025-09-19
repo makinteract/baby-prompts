@@ -69,23 +69,18 @@ export function invoke(params) {
 }
 
 export function getPrompt(options = {}) {
-  InputText.parse(instructions);
   OptionsSchema.parse(options);
 
   return async (...messages) => {
     z.array(z.union([MessageSchema, InputText])).parse(messages);
 
     messages = messages.map((m) => (typeof m === 'string' ? user(m) : m));
-    messages = [developer(instructions), ...messages];
 
-    const params = {
+    return {
       model: 'gpt-4.1-mini',
       input: messages,
       ...options,
     };
-
-    return params;
-    // return client.responses.create(params);
   };
 }
 
@@ -113,7 +108,7 @@ async function promptChain(...params) {
 }
 
 // Examples
-const prompt = getPrompt('You are a helpful assistant');
+const prompt = getPrompt();
 
 // Zero shot
 const formatscheme = z.object({
@@ -122,15 +117,16 @@ const formatscheme = z.object({
 });
 
 // Zero shot
-/*
-prompt('What is 1+1?').then(invoke).then(printOutText);
+
+prompt('What is 1+1?').then(invoke).then(text).then(console.log);
 
 prompt(developer('Output JSON'), 'What is 1+1?')
   .then(formatOutput(formatscheme))
   .then(invoke)
   .then(json)
   .then(tap);
-*/
+
+/*
 // Same
 const res = await prompt('What is 1+1?', developer('Result in binary'))
   .then(invoke)
