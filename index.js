@@ -108,7 +108,7 @@ async function promptChain(...params) {
 }
 
 // Examples
-const prompt = getPrompt();
+const prompt = getPrompt({ model: 'gpt-5-mini' });
 
 // Zero shot
 const formatscheme = z.object({
