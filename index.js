@@ -24,6 +24,7 @@ const ResponseSchema = z.object({
 
 const InputField = z.object({
   input: z.array(MessageSchema),
+  output_text: InputText.optional(),
 });
 
 // Utilities
@@ -31,45 +32,43 @@ export const tap = (x) => {
   console.log(x);
   return x;
 };
+
 export const assistant = (text = '') => {
   InputText.parse(text);
   return { role: 'assistant', content: text };
 };
+
 export const developer = (text = '') => {
   InputText.parse(text);
   return { role: 'developer', content: text };
 };
+
 export const user = (text = '') => {
   InputText.parse(text);
   return { role: 'user', content: text };
 };
 
-const formatOutput = (schema) => (params) => {
+export const formatOutput = (schema) => (params) => {
+  z.array(InputField).parse(params);
   return Promise.resolve(params).then((p) => {
+    p.input.unshift(developer('Output JSON'));
     p.text = p.text || {};
     p.text.format = zodTextFormat(schema, 'OutputSchema');
     return p;
   });
 };
 
-function printOutText({ output_text }) {
-  console.log(output_text);
-}
+export const json = ({ output_text }) => JSON.parse(output_text);
 
-function json({ output_text }) {
-  return JSON.parse(output_text);
-}
-
-function invoke(params) {
-  return Promise.resolve(params).then((res) => client.responses.create(res));
-}
+export const text = ({ output_text }) => output_text;
 
 // Prompts
 
-export function getPrompt(
-  instructions = 'You are a helpful assistant',
-  options = {}
-) {
+export function invoke(params) {
+  return Promise.resolve(params).then((res) => client.responses.create(res));
+}
+
+export function getPrompt(options = {}) {
   InputText.parse(instructions);
   OptionsSchema.parse(options);
 
@@ -133,8 +132,10 @@ prompt(developer('Output JSON'), 'What is 1+1?')
   .then(tap);
 */
 // Same
-const res = prompt('What is 1+1?').then(invoke);
-printOutText(res);
+const res = await prompt('What is 1+1?', developer('Result in binary'))
+  .then(invoke)
+  .then(text)
+  .then(console.log);
 
 // Few shot
 /*
@@ -152,6 +153,7 @@ prompt(
 
 // Chain
 
+/*
 promptChain(
   prompt(developer('Be super short in answering'), user('What is 1+1?')), //
   prompt('Add 3 to the previous answer.').then(tap),
@@ -160,3 +162,4 @@ promptChain(
 )
   .then(json)
   .then(tap);
+*/
