@@ -2,29 +2,34 @@ import 'dotenv/config';
 import { z } from 'zod';
 
 import OpenAI from 'openai';
+import { zodTextFormat } from 'openai/helpers/zod';
+
 const client = new OpenAI();
 
 // Schemas
+const InputText = z.string().nonempty();
+
 const MessageSchema = z.object({
   role: z.enum(['user', 'assistant', 'developer']),
-  content: z.string(),
+  content: InputText,
 });
 
 const OptionsSchema = z.object({
-  model: z.string().nonempty().optional(),
+  model: InputText.optional(),
 });
 
 const ResponseSchema = z.object({
-  output_text: z.string(),
+  output_text: InputText,
 });
 
-const InputText = z.string().nonempty();
+const InputField = z.object({
+  input: z.array(MessageSchema),
+});
 
 // Utilities
-export const tap = (response) => {
-  ResponseSchema.parse(response);
-  console.log(response.output_text);
-  return response;
+export const tap = (x) => {
+  console.log(x);
+  return x;
 };
 export const assistant = (text = '') => {
   InputText.parse(text);
@@ -40,55 +45,110 @@ export const user = (text = '') => {
 };
 
 // Prompts
-export async function zeroShotPrompt(instructions, userInput, options = {}) {
+
+export function getPrompt(
+  instructions = 'You are a helpful assistant',
+  options = {}
+) {
   InputText.parse(instructions);
-  InputText.parse(userInput);
   OptionsSchema.parse(options);
 
-  const response = await client.responses.create({
-    model: 'gpt-4.1-mini',
-    instructions,
-    input: userInput,
-    ...options,
-  });
-  return response;
-}
+  return async (...messages) => {
+    z.array(z.union([MessageSchema, InputText])).parse(messages);
 
-export async function fewShotPrompt(messages, options = {}) {
-  z.array(MessageSchema).parse(messages);
-  OptionsSchema.parse(options);
+    messages = messages.map((m) => (typeof m === 'string' ? user(m) : m));
+    messages = [developer(instructions), ...messages];
 
-  const response = await client.responses.create({
-    model: 'gpt-4.1-mini',
-    input: messages,
-    ...options,
-  });
-  return response;
-}
-
-export function promptLink(userInput, options = {}) {
-  z.union([InputText, z.array(MessageSchema)]).parse(userInput);
-  OptionsSchema.parse(options);
-  const prompt = typeof userInput === 'string' ? [user(userInput)] : userInput;
-
-  return async function (prevOutput) {
-    z.union([InputText, ResponseSchema]).parse(prevOutput);
-    const assistantMessage =
-      typeof prevOutput === 'string' ? prevOutput : prevOutput.output_text;
-
-    let input = prompt;
-    if (prevOutput) input = [assistant(assistantMessage), ...prompt];
-
-    const response = await client.responses.create({
+    const params = {
       model: 'gpt-4.1-mini',
-      input,
+      input: messages,
       ...options,
-    });
-    return response;
+    };
+
+    return params;
+    // return client.responses.create(params);
   };
 }
 
-export const promptChain =
-  (...fns) =>
-  (userInput = 'You are a helpful assistant') =>
-    fns.reduce((p, f) => p.then(f), Promise.resolve(userInput));
+const formatOutput = (params, schema) => {
+  return Promise.resolve(params).then((p) => {
+    p.text = p.text || {};
+    p.text.format = zodTextFormat(schema, 'OutputSchema');
+    return p;
+  });
+};
+
+// Helpers
+
+function printOutText({ output_text }) {
+  console.log(output_text);
+}
+
+function invoke(params) {
+  return Promise.resolve(params).then((res) => client.responses.create(res));
+}
+
+async function promptChain(...params) {
+  // Hidden helper
+  const responseAdapter = (response) => {
+    ResponseSchema.parse(response);
+    return assistant(response.output_text);
+  };
+
+  // Start here the chain execution
+  InputField.parse(params);
+  let prevResponse;
+  for await (const p of params) {
+    if (prevResponse) {
+      // add to front of input array
+      p.input = [responseAdapter(prevResponse), ...p.input];
+    }
+    prevResponse = await invoke(p);
+  }
+  return prevResponse;
+}
+
+// Examples
+const prompt = getPrompt('You are a helpful assistant');
+
+/*
+// Zero shot
+prompt('What is 1+1?').then(tap).then(invoke).then(printOutText);
+
+// Same
+const p = prompt('What is 1+1?');
+const res = await invoke(p);
+printOutText(res);
+
+// Few shot
+prompt(
+  'What is 1+1?',
+  user('What is 2+2?'),
+  developer('Answer using words, not numbers.')
+)
+  .then(tap)
+  .then(invoke)
+  .then(printOutText);
+
+// Chain
+
+promptChain(
+  prompt(developer('Be super short in answering'), user('What is 1+1?')), //
+  prompt('Add 3 to the previous answer.'),
+  prompt('Add an emoji at the end.')
+).then(printOutText);
+*/
+
+// Zero shot
+const formatscheme = z.object({
+  result: z.number().min(0).max(100),
+});
+
+formatOutput(
+  prompt('What is 1+20? Give result in a JSON format.'),
+  formatscheme
+)
+  .then(tap)
+  .then(invoke)
+  // .then(tap)
+  .then(printOutText);
