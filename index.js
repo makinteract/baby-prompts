@@ -44,6 +44,26 @@ export const user = (text = '') => {
   return { role: 'user', content: text };
 };
 
+const formatOutput = (schema) => (params) => {
+  return Promise.resolve(params).then((p) => {
+    p.text = p.text || {};
+    p.text.format = zodTextFormat(schema, 'OutputSchema');
+    return p;
+  });
+};
+
+function printOutText({ output_text }) {
+  console.log(output_text);
+}
+
+function json({ output_text }) {
+  return JSON.parse(output_text);
+}
+
+function invoke(params) {
+  return Promise.resolve(params).then((res) => client.responses.create(res));
+}
+
 // Prompts
 
 export function getPrompt(
@@ -70,23 +90,7 @@ export function getPrompt(
   };
 }
 
-const formatOutput = (params, schema) => {
-  return Promise.resolve(params).then((p) => {
-    p.text = p.text || {};
-    p.text.format = zodTextFormat(schema, 'OutputSchema');
-    return p;
-  });
-};
-
 // Helpers
-
-function printOutText({ output_text }) {
-  console.log(output_text);
-}
-
-function invoke(params) {
-  return Promise.resolve(params).then((res) => client.responses.create(res));
-}
 
 async function promptChain(...params) {
   // Hidden helper
@@ -96,7 +100,8 @@ async function promptChain(...params) {
   };
 
   // Start here the chain execution
-  InputField.parse(params);
+  z.array(z.promise(InputField)).parse(params);
+
   let prevResponse;
   for await (const p of params) {
     if (prevResponse) {
@@ -111,44 +116,49 @@ async function promptChain(...params) {
 // Examples
 const prompt = getPrompt('You are a helpful assistant');
 
-/*
 // Zero shot
-prompt('What is 1+1?').then(tap).then(invoke).then(printOutText);
+const formatscheme = z.object({
+  result: z.number().min(0).max(100),
+  result_with_emoji: z.string().min(2).max(10),
+});
+
+// Zero shot
+/*
+prompt('What is 1+1?').then(invoke).then(printOutText);
+
+prompt(developer('Output JSON'), 'What is 1+1?')
+  .then(formatOutput(formatscheme))
+  .then(invoke)
+  .then(json)
+  .then(tap);
 
 // Same
 const p = prompt('What is 1+1?');
 const res = await invoke(p);
 printOutText(res);
+*/
 
 // Few shot
+/*
 prompt(
   'What is 1+1?',
-  user('What is 2+2?'),
-  developer('Answer using words, not numbers.')
+  user('Add 10 to the previous answer.'),
+  developer('Answer using words, not numbers. Encode using JSON format.')
 )
-  .then(tap)
+  // .then(tap)
+  .then(formatOutput(formatscheme))
   .then(invoke)
-  .then(printOutText);
+  .then(json)
+  .then(tap);
+*/
 
 // Chain
 
 promptChain(
   prompt(developer('Be super short in answering'), user('What is 1+1?')), //
-  prompt('Add 3 to the previous answer.'),
-  prompt('Add an emoji at the end.')
-).then(printOutText);
-*/
-
-// Zero shot
-const formatscheme = z.object({
-  result: z.number().min(0).max(100),
-});
-
-formatOutput(
-  prompt('What is 1+20? Give result in a JSON format.'),
-  formatscheme
+  prompt('Add 3 to the previous answer.').then(tap),
+  prompt('Add an emoji at the end.'),
+  prompt(developer('Output JSON')).then(formatOutput(formatscheme))
 )
-  .then(tap)
-  .then(invoke)
-  // .then(tap)
-  .then(printOutText);
+  .then(json)
+  .then(tap);
