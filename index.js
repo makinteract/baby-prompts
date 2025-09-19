@@ -49,7 +49,7 @@ export const user = (text = '') => {
 };
 
 export const formatOutput = (schema) => (params) => {
-  z.array(InputField).parse(params);
+  InputField.parse(params);
   return Promise.resolve(params).then((p) => {
     p.input.unshift(developer('Output JSON'));
     p.text = p.text || {};
@@ -118,23 +118,19 @@ const formatscheme = z.object({
 
 // Zero shot
 
-prompt('What is 1+1?').then(invoke).then(text).then(console.log);
+await prompt('What is 1+10?', developer('Result in binary'))
+  .then(invoke)
+  .then(text)
+  .then(tap);
 
-prompt(developer('Output JSON'), 'What is 1+1?')
+await prompt(developer('Output JSON'), 'What is 1+1?')
   .then(formatOutput(formatscheme))
   .then(invoke)
   .then(json)
   .then(tap);
 
-/*
-// Same
-const res = await prompt('What is 1+1?', developer('Result in binary'))
-  .then(invoke)
-  .then(text)
-  .then(console.log);
-
 // Few shot
-/*
+
 prompt(
   'What is 1+1?',
   user('Add 10 to the previous answer.'),
@@ -145,11 +141,9 @@ prompt(
   .then(invoke)
   .then(json)
   .then(tap);
-*/
 
 // Chain
 
-/*
 promptChain(
   prompt(developer('Be super short in answering'), user('What is 1+1?')), //
   prompt('Add 3 to the previous answer.').then(tap),
@@ -158,4 +152,3 @@ promptChain(
 )
   .then(json)
   .then(tap);
-*/
