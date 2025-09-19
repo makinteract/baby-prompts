@@ -131,12 +131,10 @@ prompt(developer('Output JSON'), 'What is 1+1?')
   .then(invoke)
   .then(json)
   .then(tap);
-
-// Same
-const p = prompt('What is 1+1?');
-const res = await invoke(p);
-printOutText(res);
 */
+// Same
+const res = prompt('What is 1+1?').then(invoke);
+printOutText(res);
 
 // Few shot
 /*
