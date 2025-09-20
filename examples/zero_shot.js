@@ -12,7 +12,6 @@ prompt(developer('Write the results in binary'), 'What is 1+10?')
   .then(outputText)
   .then(console.log);
 
-console.log('---');
 // Same using async/await
 const result = await invoke(
   prompt(developer('Write the results in binary'), 'What is 1+10?')

@@ -1,3 +1,12 @@
+import { ZodAny } from 'zod/v4';
+
+/**
+ * Options for configuring the model prompt.
+ */
+export interface Options {
+  model: string;
+}
+
 /**
  * Represents a message in the conversation.
  */
@@ -7,19 +16,18 @@ export interface Message {
 }
 
 /**
- * Options for configuring the model prompt.
- */
-export interface Options {
-  model: string;
-  [key: string]: unknown;
-}
-
-/**
  * The response object returned by the model.
  */
 export interface Response {
   output_text: string;
-  [key: string]: unknown;
+}
+
+/**
+ * Parameters for invoking the model, including input messages and optional text.
+ */
+export interface PromptParams {
+  input: Message[];
+  text?: Record<string, unknown>;
 }
 
 /**
@@ -52,46 +60,51 @@ export function developer(text?: string): Message | never;
 export function user(text?: string): Message | never;
 
 /**
- * Prompt the model with zero-shot learning.
- * @param instructions The instructions for the model.
- * @param userInput The user input for the model.
- * @param options The options to use for the prompt, including the model.
+ * Extract the output text from the response object.
+ * @param response The response object from the model.
+ * @returns The output text from the response.
+ * @throws Propagates any error encountered during processing.
  */
-export function zeroShotPrompt(
-  instructions: string,
-  userInput: string,
-  options?: Options
+export function outputText(response: Response): string;
+
+/**
+ * Extract and parse JSON from the response text.
+ * @param response The response object from the model.
+ * @returns The parsed JSON object from the response text.
+ * @throws Propagates any error encountered during parsing.
+ */
+export function json(response: Response): Object | never;
+
+/**
+ * Format the model's output as JSON according to the provided Zod schema.
+ * @param schema The Zod schema to validate the output against.
+ * @returns A function that takes PromptParams and returns a Promise of PromptParams with validated text.
+ * @throws Propagates any error encountered during validation.
+ */
+export function jsonFormatter(
+  schema: ZodAny
+): (params: PromptParams) => Promise<PromptParams> | never;
+
+/**
+ * Invoke the model with the specified parameters.
+ * @param params The parameters for invoking the model, including input messages and optional text.
+ */
+export function invoke(params: PromptParams): Promise<Response> | never;
+
+/**
+ * Get a prompt function with the specified instructions and options.
+ * @param instructions Default instructions for the assistant.
+ * @param options Options for configuring the model prompt.
+ */
+export function getPrompt(
+  instructions: string = 'You are a helpful assistant.',
+  options: Options = {}
+): (...messages: (Message | string)[]) => Promise<Response> | never;
+
+/**
+ * Create a prompt chain with the specified parameters.
+ * @param params The parameters for invoking the model, including input messages and optional text.
+ */
+export function promptChain(
+  ...params: [PromptParams]
 ): Promise<Response> | never;
-
-/**
- * Prompt the model with few-shot learning.
- * @param messages An array of messages including instructions, examples, and user input.
- * @param options The options to use for the prompt, including the model.
- * @returns A Promise that resolves to the model's response.
- */
-export function fewShotPrompt(
-  messages: Message[],
-  options?: Options
-): Promise<Response> | never;
-
-/**
- * Get a chainable prompt function that uses the provided model and the previous context.
- * @param userInput The user input as a string or an array of messages.
- * @param options The options to use for the prompt, including the model.
- * @returns A chainable function that takes the previous output and returns a Promise<Response>.
- */
-export type PromptLinkFunction = (
-  userInput: string | Message[],
-  options?: Options
-) => (prevOutput?: string | Response) => Promise<Response> | never;
-
-/**
- * Chains multiple prompt functions together.
- * Each function receives the output of the previous function as input.
- * The first function receives the user input as a string.
- * The last function returns a Promise<Response>.
- * If any function throws an error, the chain is aborted and the error is propagated.
- */
-export const promptChain: (
-  ...fns: PromptLinkFunction[]
-) => (userInput?: string) => Promise<Response> | never;

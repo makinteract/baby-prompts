@@ -24,7 +24,6 @@ const ResponseSchema = z.object({
 
 const InputField = z.object({
   input: z.array(MessageSchema),
-  output_text: InputText.optional(),
 });
 
 // Utilities
@@ -52,6 +51,7 @@ export const json = ({ output_text }) => JSON.parse(output_text);
 
 export const outputText = ({ output_text }) => output_text;
 
+////////
 export const jsonFormatter = (schema) => (params) => {
   InputField.parse(params);
   return Promise.resolve(params).then((p) => {
@@ -65,6 +65,7 @@ export const jsonFormatter = (schema) => (params) => {
 // Prompts
 
 export function invoke(params) {
+  InputField.parse(params);
   return Promise.resolve(params).then((res) => client.responses.create(res));
 }
 
@@ -72,6 +73,7 @@ export function getPrompt(
   instructions = 'You are a helpful assistant.',
   options = {}
 ) {
+  InputText.parse(instructions);
   OptionsSchema.parse(options);
 
   return async (...messages) => {
@@ -108,17 +110,3 @@ export async function promptChain(...params) {
   }
   return prevResponse;
 }
-
-// Examples
-
-// Chain
-/*
-promptChain(
-  prompt(developer('Be super short in answering'), user('What is 1+1?')), //
-  prompt('Add 3 to the previous answer.').then(tap),
-  prompt('Add an emoji at the end.'),
-  prompt(developer('Output JSON')).then(jsonFormatter(formatscheme))
-)
-  .then(json)
-  .then(tap);
-*/
