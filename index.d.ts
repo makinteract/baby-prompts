@@ -31,6 +31,16 @@ export interface PromptParams {
 }
 
 /**
+ * A function that takes messages and returns a Promise of a Response.
+ * @param messages The messages to send to the model.
+ * @returns A Promise that resolves to a Response object.
+ * @throws Propagates any error encountered during the prompt process.
+ */
+export type Prompt = (
+  ...messages: (Message | string)[]
+) => Promise<Response> | never;
+
+/**
  * Tap into the response object for further processing.
  * @param response The response object to tap into.
  * @returns The same response object for further chaining.
@@ -99,7 +109,7 @@ export function invoke(params: PromptParams): Promise<Response> | never;
 export function getPrompt(
   instructions: string = 'You are a helpful assistant.',
   options: Options = {}
-): (...messages: (Message | string)[]) => Promise<Response> | never;
+): Prompt | never;
 
 /**
  * Create a prompt chain with the specified parameters.

@@ -1,10 +1,13 @@
 # Baby Prompts
 
+[![NPM Version](https://img.shields.io/npm/v/baby-prompts.svg?style=flat)](https://www.npmjs.org/package/<your-package-name>)
+[![NPM Downloads](https://img.shields.io/npm/dm/baby-prompts.svg?style=flat)](https://npmcharts.com/compare/<your-package-name>?minimal=true)
+
 Providing super basic prompt techniques and chains for OpenAI's response API.
 
 ## Overview
 
-The library allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output.
+👉 The library allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output.
 
 A full list of examples is available [here](examples).
 
@@ -38,7 +41,7 @@ Here are some examples of how to use different prompting techniques:
 - Few-shot prompting
 - Prompt chains
 
-### Zero shot prompting
+### 1. Zero shot prompting
 
 Here is a simple example of invoking a prompt.
 
@@ -58,7 +61,7 @@ const result = await invoke(
 console.log(outputText(result)); // or result.output_text
 ```
 
-### Few shots prompting
+### 2. Few shot prompting
 
 Multiple messages can be combined before invocation, and you can choose the `user` (default), `developer`, or `assistant` roles. Note that this is still a single prompt (a single _invoke_ method is called).
 
@@ -78,7 +81,7 @@ prompt(
   .then(console.log);
 ```
 
-### Prompt chaining
+### 3. Prompt chaining
 
 With prompt chaining, you can chain the output of a prompt directly into the input of the next one.
 
