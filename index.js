@@ -65,7 +65,7 @@ export const jsonFormatter = (schema) => (params) => {
 // Prompts
 
 export function invoke(params) {
-  InputField.parse(params);
+  z.union([InputField, z.promise(InputField)]).parse(params);
   return Promise.resolve(params).then((res) => client.responses.create(res));
 }
 

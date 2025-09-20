@@ -1,4 +1,3 @@
-import { emoji } from 'zod/v4';
 import {
   getPrompt,
   promptChain,
