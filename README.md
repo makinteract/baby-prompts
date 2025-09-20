@@ -19,7 +19,7 @@ Install the library by typing
 Before you can invoke any prompt, you need to configure your prompt by choosing a model.
 
 ```js
-import { getPrompt, invoke, outputText, developer } from '../index.js';
+import { getPrompt, invoke, outputText, developer } from 'baby-prompts';
 
 // Get the prompt function with custom options
 const prompt = getPrompt('You are a helpful assistant.', {
@@ -40,7 +40,7 @@ Here are some examples of how to use different prompting techniques:
 
 ### Zero shot prompting
 
-Here a simple example.
+Here is a simple example of invoking a prompt.
 
 ```js
 prompt(developer('Be a funny assistant'), 'Tell me a joke') // setup the prompt
@@ -85,7 +85,7 @@ With prompt chaining, you can chain the output of a prompt directly into the inp
 ```js
 promptChain(
   prompt(user('What is 1+1?')),
-  prompt(user('Say that in Italian and without using numbers.')),
+  prompt(user('Say that without using numbers.')),
   prompt(user('Add an emoji at the end.'))
 )
   .then(outputText)
