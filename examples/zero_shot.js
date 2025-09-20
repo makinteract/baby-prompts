@@ -8,9 +8,9 @@ const prompt = getPrompt('You are a helpful assistant.', {
 
 // Basic usage
 prompt(developer('Write the results in binary'), 'What is 1+10?')
-  .then(invoke)
-  .then(outputText)
-  .then(console.log);
+  .pipe(invoke)
+  .pipe(outputText)
+  .pipe(console.log);
 
 // Same using async/await
 const result = await invoke(

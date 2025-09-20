@@ -47,9 +47,9 @@ Here is a simple example of invoking a prompt.
 
 ```js
 prompt(developer('Be a funny assistant'), 'Tell me a joke') // setup the prompt
-  .then(invoke) // execute it
-  .then(outputText) // extract the output_text from the response
-  .then(console.log); // print it
+  .pipe(invoke) // execute it
+  .pipe(outputText) // extract the output_text from the response
+  .pipe(console.log); // print it
 ```
 
 If you prefer to _async/await_, here is the same code.
@@ -76,9 +76,9 @@ prompt(
   assistant('Where are you from, human?'),
   user('What is your age?') // expected: "What is your age, human?"
 )
-  .then(invoke)
-  .then(outputText)
-  .then(console.log);
+  .pipe(invoke)
+  .pipe(outputText)
+  .pipe(console.log);
 ```
 
 ### 3. Prompt chaining
@@ -91,8 +91,8 @@ promptChain(
   prompt(user('Say that without using numbers.')),
   prompt(user('Add an emoji at the end.'))
 )
-  .then(outputText)
-  .then(console.log);
+  .pipe(outputText)
+  .pipe(console.log);
 ```
 
 Please note that when using Chain, you do not need to call the _invoke_ method manually, as it is called for you by the _promptChain_ function.
@@ -118,10 +118,10 @@ prompt(
   developer('You are a helpful assistant'), //
   'Write a list of 10 people with name and age'
 )
-  .then(jsonFormatter(PeopleList))
-  .then(invoke)
-  .then(json)
-  .then(console.log);
+  .pipe(jsonFormatter(PeopleList))
+  .pipe(invoke)
+  .pipe(json)
+  .pipe(console.log);
 ```
 
 ## Requirments

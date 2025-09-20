@@ -63,6 +63,10 @@ export const jsonFormatter = (schema) => (params) => {
 };
 
 // Prompts
+function withPipe(promise) {
+  promise.pipe = (fn) => withPipe(promise.then(fn));
+  return promise;
+}
 
 export function invoke(params) {
   z.union([InputField, z.promise(InputField)]).parse(params);
@@ -76,37 +80,42 @@ export function getPrompt(
   InputText.parse(instructions);
   OptionsSchema.parse(options);
 
-  return async (...messages) => {
+  return (...messages) => {
     z.array(z.union([MessageSchema, InputText])).parse(messages);
 
     messages = messages.map((m) => (typeof m === 'string' ? user(m) : m));
     messages.unshift(developer(instructions));
 
-    return {
+    const p = Promise.resolve({
       model: 'gpt-4.1-mini',
       input: messages,
       ...options,
-    };
+    });
+
+    return withPipe(p);
   };
 }
 
-export async function promptChain(...params) {
-  // Hidden helper
-  const responseAdapter = (response) => {
-    ResponseSchema.parse(response);
-    return assistant(response.output_text);
-  };
+export function promptChain(...params) {
+  const inner = async () => {
+    // Hidden helper
+    const responseAdapter = (response) => {
+      ResponseSchema.parse(response);
+      return assistant(response.output_text);
+    };
 
-  // Start here the chain execution
-  z.array(z.promise(InputField)).parse(params);
+    // Start here the chain execution
+    z.array(z.promise(InputField)).parse(params);
 
-  let prevResponse;
-  for await (const p of params) {
-    if (prevResponse) {
-      // add to front of input array
-      p.input = [responseAdapter(prevResponse), ...p.input];
+    let prevResponse;
+    for await (const p of params) {
+      if (prevResponse) {
+        // add to front of input array
+        p.input = [responseAdapter(prevResponse), ...p.input];
+      }
+      prevResponse = await invoke(p);
     }
-    prevResponse = await invoke(p);
-  }
-  return prevResponse;
+    return prevResponse;
+  }; // return the last responses
+  return withPipe(inner());
 }

@@ -22,7 +22,7 @@ prompt(
   developer('You are a helpful assistant'), //
   'Write a list of 10 people with name and age'
 )
-  .then(jsonFormatter(PeopleList))
-  .then(invoke)
-  .then(json)
-  .then(console.log);
+  .pipe(jsonFormatter(PeopleList))
+  .pipe(invoke)
+  .pipe(json)
+  .pipe(console.log);

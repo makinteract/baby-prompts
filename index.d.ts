@@ -36,9 +36,9 @@ export interface PromptParams {
  * @returns A Promise that resolves to a Response object.
  * @throws Propagates any error encountered during the prompt process.
  */
-export type Prompt = (
-  ...messages: (Message | string)[]
-) => Promise<Response> | never;
+export interface Pipeable {
+  pipe: (fn: (response: Response) => any) => Pipeable;
+}
 
 /**
  * Tap into the response object for further processing.
@@ -103,18 +103,18 @@ export function invoke(params: PromptParams): Promise<Response> | never;
 
 /**
  * Get a prompt function with the specified instructions and options.
- * @param instructions Default instructions for the assistant.
+ * @param instructions Default instructions for the model.
  * @param options Options for configuring the model prompt.
  */
 export function getPrompt(
   instructions: string = 'You are a helpful assistant.',
   options: Options = {}
-): Prompt | never;
+): Pipeable | never;
 
 /**
- * Create a prompt chain with the specified parameters.
- * @param params The parameters for invoking the model, including input messages and optional text.
+ * Chain multiple prompts together, passing the response of one as the input to the next.
+ * @param params Parameters for invoking the model, including input messages and optional text.
+ * @returns A Pipeable object for chaining further processing on the model's response.
+ * @throws Propagates any error encountered during the prompt chain process.
  */
-export function promptChain(
-  ...params: [PromptParams]
-): Promise<Response> | never;
+export function promptChain(...params: [PromptParams]): Pipeable | never;

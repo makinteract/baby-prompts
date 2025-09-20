@@ -21,10 +21,8 @@ promptChain(
   prompt(user('Say that in Italian and without using numbers.')),
   prompt(user('Add an emoji at the end.'))
 )
-  .then(outputText)
-  .then(console.log);
-
-console.log('---');
+  .pipe(outputText)
+  .pipe(console.log);
 
 // With tap and output formatting
 const AnswerSchema = z.object({
@@ -34,10 +32,10 @@ const AnswerSchema = z.object({
 
 promptChain(
   prompt(user('What is 1+1?')), //
-  prompt(user('Say that in Italian and without using numbers.')).then(tap), // tap let you see the intermediate result
-  prompt(user('Add an emoji at the end.')).then(
+  prompt(user('Say that in Italian and without using numbers.')).pipe(tap), // tap let you see the intermediate result
+  prompt(user('Add an emoji at the end.')).pipe(
     jsonFormatter(AnswerSchema) // last prompt output formatting
   )
 )
-  .then(json)
-  .then(console.log);
+  .pipe(json)
+  .pipe(console.log);

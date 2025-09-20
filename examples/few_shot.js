@@ -24,9 +24,9 @@ prompt(
   assistant('Where are you from, human?'),
   user('What is your age?') // expected: "What is your age, human?"
 )
-  .then(invoke)
-  .then(outputText)
-  .then(console.log);
+  .pipe(invoke)
+  .pipe(outputText)
+  .pipe(console.log);
 
 // Same
 prompt(
@@ -39,6 +39,6 @@ prompt(
   assistant('Where are you from, human?'),
   'What is your age?' // expected: "What is your age, human?"
 )
-  .then(invoke)
-  .then(outputText)
-  .then(console.log);
+  .pipe(invoke)
+  .pipe(outputText)
+  .pipe(console.log);
