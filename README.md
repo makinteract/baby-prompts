@@ -67,7 +67,7 @@ Multiple messages can be combined before invocation, and you can choose the `use
 
 ```js
 prompt(
-  developer('As a question following this style'),
+  developer('Ask a question following this style'),
   user('How are you?'),
   assistant('How are you, human?'),
   user('What time is it?'),

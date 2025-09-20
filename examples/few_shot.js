@@ -15,7 +15,7 @@ const prompt = getPrompt('You are a helpful assistant.', {
 
 //  Few shot
 prompt(
-  developer('As a question following this style'),
+  developer('Ask a question following this style'),
   user('How are you?'),
   assistant('How are you, human?'),
   user('What time is it?'),
