@@ -4,18 +4,9 @@ Providing super basic prompt techniques and chains for OpenAI's response API.
 
 ## Overview
 
-The library allows to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choosing formatting output.
+The library allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output.
 
-Here a ver
-
-> Note  
-> For the following tutorials, I will use the following function to print out the results
->
-> ```js
-> function printOutText({ output_text }) {
->   console.log(output_text);
-> }
-> ```
+A full list of examples is available [here](examples).
 
 ## Installation
 
@@ -25,7 +16,23 @@ Install the library by typing
 
 ## Prompt techniques examples
 
-are some examples of how to use different prompting techniques:
+Before you can invoke any prompt, you need to configure your prompt by choosing a model.
+
+```js
+import { getPrompt, invoke, outputText, developer } from '../index.js';
+
+// Get the prompt function with custom options
+const prompt = getPrompt('You are a helpful assistant.', {
+  model: 'gpt-4.1-mini',
+  temperature: 0,
+});
+```
+
+The default model is `gpt-4.1-mini`.
+
+Follow the [OpenAI documentation](https://platform.openai.com/docs/api-reference/introduction) for choosing models and options.
+
+Here are some examples of how to use different prompting techniques:
 
 - Zero-shot prompting
 - Few-shot prompting
@@ -33,74 +40,91 @@ are some examples of how to use different prompting techniques:
 
 ### Zero shot prompting
 
+Here a simple example.
+
 ```js
-import { zeroShotPrompt } from 'baby-prompts';
-zeroShotPrompt('You are a funny assistant', 'Tell me a joke!').then(
-  printOutText
+prompt(developer('Be a funny assistant'), 'Tell me a joke') // setup the prompt
+  .then(invoke) // execute it
+  .then(outputText) // extract the output_text from the response
+  .then(console.log); // print it
+```
+
+If you prefer to _async/await_, here is the same code.
+
+```js
+const result = await invoke(
+  prompt(developer('Be a funny assistant'), 'Tell me a joke')
 );
+console.log(outputText(result)); // or result.output_text
 ```
 
 ### Few shots prompting
 
-Function signature: `function fewShotPrompt(messages, options = {}) `
+Multiple messages can be combined before invocation, and you can choose the `user` (default), `developer`, or `assistant` roles. Note that this is still a single prompt (a single _invoke_ method is called).
 
 ```js
-import { fewShotPrompt, user, assistant, developer } from 'baby-prompts';
-
-fewShotPrompt([
-  developer('You are not a good calculator, off of 1'), //
-  user('What is 2 + 2?'),
-  assistant('5'),
-  user('What is 3 + 3?'),
-  assistant('7'),
-  user('What is 4 + 4?'),
-]).then(printOutText);
+prompt(
+  developer('As a question following this style'),
+  user('How are you?'),
+  assistant('How are you, human?'),
+  user('What time is it?'),
+  assistant('What time is it, human?'),
+  user('Where are you from?'),
+  assistant('Where are you from, human?'),
+  user('What is your age?') // expected: "What is your age, human?"
+)
+  .then(invoke)
+  .then(outputText)
+  .then(console.log);
 ```
 
 ### Prompt chaining
 
-```js
-import { promptChain, promptLink, tap } from 'baby-prompts';
-
-// Chain of prompts
-promptChain(
-  promptLink('What is 2 + 2?'),
-  // tap, // use tap to see intermediate steps
-  promptLink('What is the square root of that?'),
-  promptLink('Say the result in Italian.')
-)().then(printOutText);
-```
-
-Or here a more complex example.
+With prompt chaining, you can chain the output of a prompt directly into the input of the next one.
 
 ```js
 promptChain(
-  promptLink('What is 2 + 2?'), // you can use a string
-  tap, // use tap to see intermediate steps
-  promptLink([
-    // you can also use an array of messages
-    developer('Be brief and just give the number.'),
-    user('Say the result in Italian.'),
-  ])
-)('You are an helpful assistant.') // The initial instructions
-  .then(printOutText);
+  prompt(user('What is 1+1?')),
+  prompt(user('Say that in Italian and without using numbers.')),
+  prompt(user('Add an emoji at the end.'))
+)
+  .then(outputText)
+  .then(console.log);
 ```
 
-## Change options
+Please note that when using Chain, you do not need to call the _invoke_ method manually, as it is called for you by the _promptChain_ function.
 
-You may pass different models and options in the `options` parameter. Here is an example:
+## Structured output
+
+You can structure the output of a prompt just before invocation. For that, you need to use the [zod](https://www.npmjs.com/package/zod) library, which is already included as a dependency.
 
 ```js
-zeroShotPrompt(
-  'You are a helpful assistant that translates English to French.',
-  'Translate the following English text to French: "Hello, how are you?"',
-  {
-    model: 'gpt-5',
-    reasoning: { effort: 'medium' },
-  }
-).then(printOutText);
+import { z } from 'zod';
+
+const Person = z.object({
+  name: z.string(),
+  age: z.number(),
+});
+
+const PeopleList = z.object({
+  people: z.array(Person).length(10), // exactly 10 people
+});
+
+// prompt
+prompt(
+  developer('You are a helpful assistant'), //
+  'Write a list of 10 people with name and age'
+)
+  .then(jsonFormatter(PeopleList))
+  .then(invoke)
+  .then(json)
+  .then(console.log);
 ```
 
 ## Requirments
 
 This code requires that you have a `.env` file with the variable `OPENAI_API_KEY` set to your own OpenAI API key. You can find an API key [here](https://platform.openai.com/api-keys).
+
+## Credits
+
+Developed by [MAKinteract](https://make.kaist.ac.kr/andrea) with ♥️.

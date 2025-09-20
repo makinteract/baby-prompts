@@ -18,8 +18,8 @@ const prompt = getPrompt('Answer without providing any explanation.', {
 
 // Simple
 promptChain(
-  prompt(user('What is 1+1?')), //
-  prompt(user('Say that in Italian and without using numbers.')), // tap let you see the intermediate result
+  prompt(user('What is 1+1?')),
+  prompt(user('Say that in Italian and without using numbers.')),
   prompt(user('Add an emoji at the end.'))
 )
   .then(outputText)
