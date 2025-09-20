@@ -2,11 +2,19 @@
 
 Providing super basic prompt techniques and chains for OpenAI's response API.
 
-## Overview
+## Installation
 
-The library allows to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choosing formatting output.
+Install the library by typing
 
-Here a ver
+`npm install baby-prompts`
+
+## Usage
+
+Here are some examples of how to use different prompting techniques:
+
+- Zero-shot prompting
+- Few-shot prompting
+- Prompt chains
 
 > Note  
 > For the following tutorials, I will use the following function to print out the results
@@ -16,20 +24,6 @@ Here a ver
 >   console.log(output_text);
 > }
 > ```
-
-## Installation
-
-Install the library by typing
-
-`npm install baby-prompts`
-
-## Prompt techniques examples
-
-are some examples of how to use different prompting techniques:
-
-- Zero-shot prompting
-- Few-shot prompting
-- Prompt chains
 
 ### Zero shot prompting
 

@@ -48,7 +48,11 @@ export const user = (text = '') => {
   return { role: 'user', content: text };
 };
 
-export const formatOutput = (schema) => (params) => {
+export const json = ({ output_text }) => JSON.parse(output_text);
+
+export const outputText = ({ output_text }) => output_text;
+
+export const jsonFormatter = (schema) => (params) => {
   InputField.parse(params);
   return Promise.resolve(params).then((p) => {
     p.input.unshift(developer('Output JSON'));
@@ -58,23 +62,23 @@ export const formatOutput = (schema) => (params) => {
   });
 };
 
-export const json = ({ output_text }) => JSON.parse(output_text);
-
-export const text = ({ output_text }) => output_text;
-
 // Prompts
 
 export function invoke(params) {
   return Promise.resolve(params).then((res) => client.responses.create(res));
 }
 
-export function getPrompt(options = {}) {
+export function getPrompt(
+  instructions = 'You are a helpful assistant.',
+  options = {}
+) {
   OptionsSchema.parse(options);
 
   return async (...messages) => {
     z.array(z.union([MessageSchema, InputText])).parse(messages);
 
     messages = messages.map((m) => (typeof m === 'string' ? user(m) : m));
+    messages.unshift(developer(instructions));
 
     return {
       model: 'gpt-4.1-mini',
@@ -84,9 +88,7 @@ export function getPrompt(options = {}) {
   };
 }
 
-// Helpers
-
-async function promptChain(...params) {
+export async function promptChain(...params) {
   // Hidden helper
   const responseAdapter = (response) => {
     ResponseSchema.parse(response);
@@ -108,47 +110,15 @@ async function promptChain(...params) {
 }
 
 // Examples
-const prompt = getPrompt({ model: 'gpt-5-mini' });
-
-// Zero shot
-const formatscheme = z.object({
-  result: z.number().min(0).max(100),
-  result_with_emoji: z.string().min(2).max(10),
-});
-
-// Zero shot
-
-await prompt('What is 1+10?', developer('Result in binary'))
-  .then(invoke)
-  .then(text)
-  .then(tap);
-
-await prompt(developer('Output JSON'), 'What is 1+1?')
-  .then(formatOutput(formatscheme))
-  .then(invoke)
-  .then(json)
-  .then(tap);
-
-// Few shot
-
-prompt(
-  'What is 1+1?',
-  user('Add 10 to the previous answer.'),
-  developer('Answer using words, not numbers. Encode using JSON format.')
-)
-  // .then(tap)
-  .then(formatOutput(formatscheme))
-  .then(invoke)
-  .then(json)
-  .then(tap);
 
 // Chain
-
+/*
 promptChain(
   prompt(developer('Be super short in answering'), user('What is 1+1?')), //
   prompt('Add 3 to the previous answer.').then(tap),
   prompt('Add an emoji at the end.'),
-  prompt(developer('Output JSON')).then(formatOutput(formatscheme))
+  prompt(developer('Output JSON')).then(jsonFormatter(formatscheme))
 )
   .then(json)
   .then(tap);
+*/
