@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import { z } from 'zod';
+import { zodTextFormat } from 'openai/helpers/zod';
 
 import OpenAI from 'openai';
-import { zodTextFormat } from 'openai/helpers/zod';
 
 const client = new OpenAI();
 
@@ -51,7 +51,6 @@ export const json = ({ output_text }) => JSON.parse(output_text);
 
 export const outputText = ({ output_text }) => output_text;
 
-////////
 export const jsonFormatter = (schema) => (params) => {
   InputField.parse(params);
   return Promise.resolve(params).then((p) => {
@@ -62,11 +61,14 @@ export const jsonFormatter = (schema) => (params) => {
   });
 };
 
-// Prompts
+// Helpers
+
 function withPipe(promise) {
   promise.pipe = (fn) => withPipe(promise.then(fn));
   return promise;
 }
+
+// Prompts
 
 export function invoke(params) {
   z.union([InputField, z.promise(InputField)]).parse(params);

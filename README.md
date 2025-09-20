@@ -52,6 +52,7 @@ prompt(developer('Be a funny assistant'), 'Tell me a joke') // setup the prompt
   .pipe(console.log); // print it
 ```
 
+Note that the `pipe` method is basically a `then` call (i.e., method of a Promise).
 If you prefer to _async/await_, here is the same code.
 
 ```js
@@ -95,7 +96,9 @@ promptChain(
   .pipe(console.log);
 ```
 
-Please note that when using Chain, you do not need to call the _invoke_ method manually, as it is called for you by the _promptChain_ function.
+Please note that when using chains, you do not need to call the _invoke_ method manually, as it is called for you by the _promptChain_ function.
+
+For more complex examples, involving the usage of the `tap` function and formatted output, look at [this](./examples/chain.js).
 
 ## Structured output
 
