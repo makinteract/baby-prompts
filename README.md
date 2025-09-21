@@ -22,7 +22,18 @@ Install the library by typing
 Before you can invoke any prompt, you need to configure your prompt by choosing a model.
 
 ```js
-import { getPrompt, invoke, outputText, developer } from 'baby-prompts';
+import {
+  getPrompt,
+  promptChain,
+  invoke,
+  outputText,
+  jsonFormatter,
+  json,
+  user,
+  assistant,
+  developer,
+  tap,
+} from 'baby-prompts';
 
 // Get the prompt function with custom options
 const prompt = getPrompt('You are a helpful assistant.', {
