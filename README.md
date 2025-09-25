@@ -33,6 +33,7 @@ import {
   assistant,
   developer,
   tap,
+  withPreviousResponse,
 } from 'baby-prompts';
 
 // Get the prompt function with custom options
@@ -136,6 +137,45 @@ prompt(
   .pipe(invoke)
   .pipe(json)
   .pipe(console.log);
+```
+
+## Conversational history
+
+You can preserve information across multiple messages or turns in a conversation by passing a response as an input to the next prompt using the `withPreviousResponse` function.
+
+Here a couple of examples.
+
+```js
+import {
+  getPrompt,
+  invoke,
+  withPreviousResponse,
+  outputText,
+  promptChain,
+} from 'baby-prompts';
+
+// Get the prompt function with custom options
+const prompt = getPrompt(
+  'Do not add any explanation. Just return what you are asked for.'
+);
+
+// Get the first prompt
+const res = await prompt('My name is Jon Snow.').pipe(invoke);
+
+//U sing a single prompt
+await prompt('What is my name?')
+  .then(withPreviousResponse(res)) // pass in the previous response
+  .then(invoke)
+  .then(outputText)
+  .then(console.log); // "Jon Snow"
+
+// Using a chain
+await promptChain(
+  prompt('What is my name?').then(withPreviousResponse(res)), // pass in the previous response
+  prompt('Add an emoji to my name.')
+)
+  .then(outputText)
+  .then(console.log); // "Jon Snow 🐺"
 ```
 
 ## Requirments

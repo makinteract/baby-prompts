@@ -1,7 +1,7 @@
 {
   "name": "baby-prompts",
   "description": "Providing super basic prompt techniques and chains for OpenAI's response API",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "author": "MAKinteract",
   "main": "index.js",
   "type": "module",

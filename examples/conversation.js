@@ -4,8 +4,6 @@ import {
   withPreviousResponse,
   outputText,
   promptChain,
-  user,
-  developer,
 } from '../index.js';
 // } from 'baby-prompts';
 

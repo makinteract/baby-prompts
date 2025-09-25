@@ -20,6 +20,7 @@ const OptionsSchema = z.object({
 
 const ResponseSchema = z.object({
   output_text: InputText,
+  id: InputText,
 });
 
 const InputField = z.object({
@@ -47,9 +48,20 @@ export const user = (text = '') => {
   return { role: 'user', content: text };
 };
 
-export const json = ({ output_text }) => JSON.parse(output_text);
+export const outputText = (response) => {
+  ResponseSchema.parse(response);
+  return response.output_text;
+};
 
-export const outputText = ({ output_text }) => output_text;
+export const responseId = (response) => {
+  ResponseSchema.parse(response);
+  return response.id;
+};
+
+export const json = (response) => {
+  ResponseSchema.parse(response);
+  return JSON.parse(response.output_text);
+};
 
 export const jsonFormatter = (schema) => (params) => {
   InputField.parse(params);
@@ -66,6 +78,22 @@ export const jsonFormatter = (schema) => (params) => {
 function withPipe(promise) {
   promise.pipe = (fn) => withPipe(promise.then(fn));
   return promise;
+}
+
+export function withOptions(options) {
+  OptionsSchema.parse(options);
+  return (params) => {
+    z.union([InputField, z.promise(InputField)]).parse(params);
+    return {
+      ...params,
+      ...options,
+    };
+  };
+}
+
+export function withPreviousResponse(prevResponse) {
+  ResponseSchema.parse(prevResponse);
+  return withOptions({ previous_response_id: prevResponse.id });
 }
 
 // Prompts

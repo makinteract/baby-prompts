@@ -75,7 +75,15 @@ export function user(text?: string): Message | never;
  * @returns The output text from the response.
  * @throws Propagates any error encountered during processing.
  */
-export function outputText(response: Response): string;
+export function outputText(response: Response): string | never;
+
+/**
+ * Extract the response ID from the response object.
+ * @param response The response object from the model.
+ * @returns The response ID from the response.
+ * @throws Propagates any error encountered during processing.
+ */
+export function responseId(response: Response): string | never;
 
 /**
  * Extract and parse JSON from the response text.
@@ -94,6 +102,26 @@ export function json(response: Response): Object | never;
 export function jsonFormatter(
   schema: ZodAny
 ): (params: PromptParams) => Promise<PromptParams> | never;
+
+/**
+ * Return a function that merges the provided options into the PromptParams.
+ * @param options Options for configuring the model prompt.
+ * @returns A function that takes PromptParams and returns PromptParams with merged options.
+ * @throws Propagates any error encountered during processing.
+ */
+export function withOptions(
+  options
+): (params: PromptParams) => PromptParams | never;
+
+/**
+ * Return a function that adds the previous response to the PromptParams text.
+ * @param prevResponse The previous response object from the model.
+ * @returns A function that takes PromptParams and returns PromptParams with the previous response added to text.
+ * @throws Propagates any error encountered during processing.
+ */
+export function withPreviousResponse(
+  prevResponse
+): (params: PromptParams) => PromptParams | never;
 
 /**
  * Invoke the model with the specified parameters.
