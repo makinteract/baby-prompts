@@ -5,6 +5,18 @@
 
 Providing super basic prompt techniques and chains for OpenAI's response API.
 
+- [Baby Prompts](#baby-prompts)
+  - [Overview](#overview)
+  - [Installation](#installation)
+  - [Prompt techniques examples](#prompt-techniques-examples)
+    - [1. Zero shot prompting](#1-zero-shot-prompting)
+    - [2. Few shot prompting](#2-few-shot-prompting)
+    - [3. Prompt chaining](#3-prompt-chaining)
+  - [Structured output](#structured-output)
+  - [Conversational history](#conversational-history)
+  - [Requirments](#requirments)
+  - [Credits](#credits)
+
 ## Overview
 
 👉 The library allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output.
