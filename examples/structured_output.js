@@ -1,4 +1,5 @@
 import { getPrompt, invoke, json, jsonFormatter, developer } from '../index.js';
+// import { getPrompt, invoke, json, jsonFormatter, developer } from 'baby-prompts';
 import { z } from 'zod';
 
 // Get the prompt function with custom options

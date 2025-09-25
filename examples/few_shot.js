@@ -6,6 +6,7 @@ import {
   user,
   assistant,
 } from '../index.js';
+// } from 'baby-prompts';
 
 // Get the prompt function with custom options
 const prompt = getPrompt('You are a helpful assistant.', {

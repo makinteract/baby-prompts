@@ -6,7 +6,9 @@ import {
   json,
   assistant,
   user,
-} from 'baby-prompts';
+} from '../index.js';
+// } from 'baby-prompts';
+
 import { z } from 'zod';
 
 // Get the prompt function with custom options
