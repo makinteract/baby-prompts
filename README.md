@@ -9,8 +9,8 @@ Providing super basic prompt techniques and chains for OpenAI's response API.
   - [Overview](#overview)
   - [Installation](#installation)
   - [Prompt techniques examples](#prompt-techniques-examples)
-    - [1. Zero shot prompting](#1-zero-shot-prompting)
-    - [2. Few shot prompting](#2-few-shot-prompting)
+    - [1. Zero-shot prompting](#1-zero-shot-prompting)
+    - [2. Few-shot prompting](#2-few-shot-prompting)
     - [3. Prompt chaining](#3-prompt-chaining)
   - [Structured output](#structured-output)
   - [Conversational history](#conversational-history)
@@ -61,11 +61,11 @@ Follow the [OpenAI documentation](https://platform.openai.com/docs/api-reference
 
 Here are some examples of how to use different prompting techniques:
 
-- Zero-shot prompting
-- Few-shot prompting
-- Prompt chains
+- _Zero-shot_ prompting
+- _Few-shot_ prompting
+- Prompt _chains_
 
-### 1. Zero shot prompting
+### 1. Zero-shot prompting
 
 Here is a simple example of invoking a prompt.
 
@@ -86,7 +86,7 @@ const result = await invoke(
 console.log(outputText(result)); // or result.output_text
 ```
 
-### 2. Few shot prompting
+### 2. Few-shot prompting
 
 Multiple messages can be combined before invocation, and you can choose the `user` (default), `developer`, or `assistant` roles. Note that this is still a single prompt (a single _invoke_ method is called).
 
@@ -174,7 +174,7 @@ const prompt = getPrompt(
 // Get the first prompt
 const res = await prompt('My name is Jon Snow.').pipe(invoke);
 
-//U sing a single prompt
+// Using a single prompt
 await prompt('What is my name?')
   .then(withPreviousResponse(res)) // pass in the previous response
   .then(invoke)
