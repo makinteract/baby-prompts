@@ -115,12 +115,12 @@ export function withOptions(
 
 /**
  * Return a function that adds the previous response to the PromptParams text.
- * @param prevResponse The previous response object from the model.
+ * @param prevResponse The previous response object from the model. If not provided, returns undefined.
  * @returns A function that takes PromptParams and returns PromptParams with the previous response added to text.
  * @throws Propagates any error encountered during processing.
  */
 export function withPreviousResponse(
-  prevResponse
+  prevResponse: Response | undefined
 ): (params: PromptParams) => PromptParams | never;
 
 /**
