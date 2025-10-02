@@ -1,7 +1,7 @@
 {
   "name": "baby-prompts",
   "description": "Providing super basic prompt techniques and chains for OpenAI's response API",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "author": "MAKinteract",
   "main": "index.js",
   "type": "module",
@@ -10,6 +10,9 @@
     "url": "git+https://github.com/makinteract/baby-prompts.git"
   },
   "license": "MIT",
+  "scripts": {
+    "publish": "npm publish"
+  },
   "keywords": [
     "openai",
     "llm",
