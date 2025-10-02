@@ -92,7 +92,7 @@ export function withOptions(options) {
 }
 
 export function withPreviousResponse(prevResponse) {
-  if (!prevResponse) return withOptions({});
+  if (!prevResponse) return;
   ResponseSchema.parse(prevResponse);
   return withOptions({ previous_response_id: prevResponse.id });
 }
