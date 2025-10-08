@@ -1,7 +1,7 @@
 # Baby Prompts
 
-[![NPM Version](https://img.shields.io/npm/v/baby-prompts.svg?style=flat)](https://www.npmjs.org/package/<your-package-name>)
-[![NPM Downloads](https://img.shields.io/npm/dm/baby-prompts.svg?style=flat)](https://npmcharts.com/compare/<your-package-name>?minimal=true)
+[![NPM Version](https://img.shields.io/npm/v/baby-prompts.svg?style=flat)](https://www.npmjs.org/package/baby-prompts)
+[![NPM Downloads](https://img.shields.io/npm/dm/baby-prompts.svg?style=flat)](https://npmcharts.com/compare/baby-prompts?minimal=true)
 
 Providing super basic prompt techniques and chains for OpenAI's response API.
 
