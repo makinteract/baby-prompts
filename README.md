@@ -15,7 +15,6 @@ Providing super basic prompt techniques and chains for OpenAI's response API.
   - [Streaming](#streaming)
   - [Structured output](#structured-output)
   - [Conversational history](#conversational-history)
-  - [Requirments](#requirments)
   - [Credits](#credits)
 
 ![example](./assets/baby-prompts.png)
@@ -30,7 +29,13 @@ A full list of examples is available [here](examples).
 
 Install the library by typing
 
-`npm install baby-prompts`
+```sh
+npm install baby-prompts
+```
+
+To run the examples, you also need to have an account with [OpenAI](https://platform.openai.com) and sufficient credits in your account to run the models.
+
+You then need to create a `.env` file with the variable `OPENAI_API_KEY` set to your own OpenAI API key and have that in your root folder. You can find an API key [here](https://platform.openai.com/api-keys).
 
 ## Prompt techniques examples
 
@@ -218,10 +223,6 @@ await promptChain(
   .then(outputText)
   .then(console.log); // "Jon Snow 🐺"
 ```
-
-## Requirments
-
-This code requires that you have a `.env` file with the variable `OPENAI_API_KEY` set to your own OpenAI API key. You can find an API key [here](https://platform.openai.com/api-keys).
 
 ## Credits
 
