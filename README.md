@@ -12,6 +12,7 @@ Providing super basic prompt techniques and chains for OpenAI's response API.
     - [1. Zero-shot prompting](#1-zero-shot-prompting)
     - [2. Few-shot prompting](#2-few-shot-prompting)
     - [3. Prompt chaining](#3-prompt-chaining)
+  - [Streaming](#streaming)
   - [Structured output](#structured-output)
   - [Conversational history](#conversational-history)
   - [Requirments](#requirments)
@@ -123,6 +124,29 @@ promptChain(
 Please note that when using chains, you do not need to call the _invoke_ method manually, as it is called for you by the _promptChain_ function.
 
 For more complex examples, involving the usage of the `tap` function and formatted output, look at [this](./examples/chain.js).
+
+## Streaming
+
+When you create a prompt at first you can pass the `stream: true` option to enable streaming.
+
+```js
+import { getPrompt, invoke, outputText, developer } from '../index.js';
+
+// Get the prompt function with custom options
+const prompt = getPrompt('You are a helpful assistant.', {
+  stream: true,
+}); // { model: 'gpt-5' ...}
+
+// Basic usage
+const stream = await prompt(
+  developer('Write a paragraph about the ocean')
+).pipe(invoke);
+
+for await (const event of stream) {
+  if (event.type == 'response.output_text.delta')
+    process.stdout.write(event.delta);
+}
+```
 
 ## Structured output
 
