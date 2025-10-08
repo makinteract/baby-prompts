@@ -28,11 +28,11 @@ const response = await promptChain(
   prompt(
     developer('Personalize the joke for me'), // Developer prompt
     user('Tell me a joke about my name.') // User prompt
-  ).pipe(withPreviousResponse(first)), //
+  ).pipe(withPreviousResponse(first)), // Context from previous response
   prompt('Write both the joke in English and Italian').pipe(
-    jsonFormatter(EN_IT_Schema) // Output format
+    jsonFormatter(EN_IT_Schema) // Choose output format
   )
 )
-  .pipe(json)
+  .pipe(json) // Parse the output as JSON
   .pipe((r) => r.it) // Type safety
   .pipe(tap); // Print only the Italian version

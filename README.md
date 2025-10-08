@@ -18,7 +18,7 @@ Providing super basic prompt techniques and chains for OpenAI's response API.
   - [Requirments](#requirments)
   - [Credits](#credits)
 
-![example](./assets/code.png)
+![example](./assets/baby-prompts.png)
 
 ## Overview
 
