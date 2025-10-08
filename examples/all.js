@@ -18,7 +18,10 @@ const EN_IT_Schema = z.object({
   it: z.string().describe('The translated text in Italian'),
 });
 
-const prompt = getPrompt('You are a funny assistant that tells jokes.', {});
+const prompt = getPrompt('You are a funny assistant that tells jokes.', {
+  model: 'gpt-5',
+  reasoning: { effort: 'low' },
+});
 
 // An example to show all the features together
 // A simple prompt

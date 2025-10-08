@@ -52,10 +52,14 @@ import {
   withPreviousResponse,
 } from 'baby-prompts';
 
-// Get the prompt function with custom options
+// Get the prompt function with default settings
+const prompt = getPrompt();
+
+// ...or select custom options
 const prompt = getPrompt('You are a helpful assistant.', {
-  model: 'gpt-4.1-mini',
-  temperature: 0,
+  model: 'gpt-5',
+  reasoning: { effort: 'low' },
+  stream: false,
 });
 ```
 
@@ -136,7 +140,7 @@ When you create a prompt at first you can pass the `stream: true` option to enab
 // Get the prompt function with custom options
 const prompt = getPrompt('You are a helpful assistant.', {
   stream: true,
-}); // { model: 'gpt-5' ...}
+});
 
 // Basic usage
 const stream = await prompt(
