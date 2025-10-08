@@ -18,9 +18,11 @@ Providing super basic prompt techniques and chains for OpenAI's response API.
   - [Requirments](#requirments)
   - [Credits](#credits)
 
+![example](./assets/code.png)
+
 ## Overview
 
-👉 The library allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output.
+👉 The library allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output. It also supports streaming and conversational history.
 
 A full list of examples is available [here](examples).
 
@@ -35,6 +37,7 @@ Install the library by typing
 Before you can invoke any prompt, you need to configure your prompt by choosing a model.
 
 ```js
+// Import the necessary features
 import {
   getPrompt,
   promptChain,
@@ -130,8 +133,6 @@ For more complex examples, involving the usage of the `tap` function and formatt
 When you create a prompt at first you can pass the `stream: true` option to enable streaming.
 
 ```js
-import { getPrompt, invoke, outputText, developer } from '../index.js';
-
 // Get the prompt function with custom options
 const prompt = getPrompt('You are a helpful assistant.', {
   stream: true,

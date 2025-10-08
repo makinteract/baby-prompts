@@ -1,4 +1,5 @@
 import { getPrompt, invoke, outputText, developer } from '../index.js';
+// import { getPrompt, invoke, outputText, developer } from 'baby-prompts';
 
 // Get the prompt function with custom options
 const prompt = getPrompt('You are a helpful assistant.', {
