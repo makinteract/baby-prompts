@@ -21,7 +21,7 @@ Providing super basic prompt techniques and chains for OpenAI's response API.
 
 ## Overview
 
-👉 The library allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output. It also supports streaming and conversational history.
+👉 A NodeJS library that allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output. It also supports streaming and conversational history.
 
 A full list of examples is available [here](examples).
 
@@ -36,6 +36,8 @@ npm install baby-prompts
 To run the examples, you also need to have an account with [OpenAI](https://platform.openai.com) and sufficient credits in your account to run the models.
 
 You then need to create a `.env` file with the variable `OPENAI_API_KEY` set to your own OpenAI API key and have that in your root folder. You can find an API key [here](https://platform.openai.com/api-keys).
+
+> [!WARNING] This is a library for NodeJS and relies on having a .env file with the OPEN_API_KEY in it. It won't work directly from the browser.
 
 ## Prompt techniques examples
 
