@@ -37,7 +37,7 @@ To run the examples, you also need to have an account with [OpenAI](https://plat
 
 You then need to create a `.env` file with the variable `OPENAI_API_KEY` set to your own OpenAI API key and have that in your root folder. You can find an API key [here](https://platform.openai.com/api-keys).
 
-> [!WARNING] This is a library for NodeJS and relies on having a .env file with the OPEN_API_KEY in it. It won't work directly from the browser.
+> ⚠️ This is a library for NodeJS and relies on having a .env file with the OPEN_API_KEY in it. It won't work directly from the browser.
 
 ## Prompt techniques examples
 
