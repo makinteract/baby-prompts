@@ -5,6 +5,7 @@ import { ZodAny } from 'zod/v4';
  */
 export interface Options {
   model: string;
+  stream: boolean;
 }
 
 /**
@@ -110,7 +111,7 @@ export function jsonFormatter(
  * @throws Propagates any error encountered during processing.
  */
 export function withOptions(
-  options
+  options: Partial<Options>
 ): (params: PromptParams) => PromptParams | never;
 
 /**

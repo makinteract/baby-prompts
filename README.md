@@ -144,15 +144,12 @@ For more complex examples, involving the usage of the `tap` function and formatt
 When you create a prompt at first you can pass the `stream: true` option to enable streaming.
 
 ```js
-// Get the prompt function with custom options
-const prompt = getPrompt('You are a helpful assistant.', {
-  stream: true,
-});
+const prompt = getPrompt('You are a helpful assistant.');
 
 // Basic usage
-const stream = await prompt(
-  developer('Write a paragraph about the ocean')
-).pipe(invoke);
+const stream = await prompt(developer('Write a paragraph about the ocean'))
+  .pipe(withOptions({ stream: true }))
+  .pipe(invoke);
 
 for await (const event of stream) {
   if (event.type == 'response.output_text.delta')
