@@ -1,8 +1,6 @@
-import { getPrompt, invoke, withOptions, developer } from '../index.js';
-// import { getPrompt, invoke, outputText, developer } from 'baby-prompts';
+import { getPrompt, invoke, withOptions, developer } from '../index.js'; //from 'baby-prompts';
 
-// Get the prompt function with custom options
-const prompt = getPrompt('You are a helpful assistant');
+const prompt = getPrompt();
 
 // Basic usage
 const stream = await prompt(developer('Write a paragraph about the ocean'))

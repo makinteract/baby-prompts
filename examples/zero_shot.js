@@ -1,8 +1,7 @@
-import { getPrompt, invoke, outputText, developer } from '../index.js';
-// import { getPrompt, invoke, outputText, developer } from 'baby-prompts';
+import { getPrompt, invoke, outputText, developer } from '../index.js'; // from 'baby-prompts';
 
 // Get the prompt function with custom options
-const prompt = getPrompt('You are a helpful assistant.', {
+const prompt = getPrompt({
   model: 'gpt-4.1-mini',
   temperature: 0,
 }); // { model: 'gpt-5' ...}
@@ -11,7 +10,7 @@ const prompt = getPrompt('You are a helpful assistant.', {
 prompt(developer('Write the results in binary'), 'What is 1+10?')
   .pipe(invoke)
   .pipe(outputText)
-  .pipe(console.log);
+  .pipe(console.log); // or use the `tap` function
 
 // Same using async/await
 const result = await invoke(

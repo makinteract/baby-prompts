@@ -2,7 +2,7 @@ import {
   getPrompt,
   promptChain,
   developer,
-  jsonFormatter,
+  withJsonFormatter,
   json,
   tap,
   invoke,
@@ -18,7 +18,7 @@ const EN_IT_Schema = z.object({
   it: z.string().describe('The translated text in Italian'),
 });
 
-const prompt = getPrompt('You are a funny assistant that tells jokes.', {
+const prompt = getPrompt({
   model: 'gpt-5',
   reasoning: { effort: 'low' },
 });
@@ -33,7 +33,7 @@ const response = await promptChain(
     user('Tell me a joke about my name.') // User prompt
   ).pipe(withPreviousResponse(first)), // Context from previous response
   prompt('Write both the joke in English and Italian').pipe(
-    jsonFormatter(EN_IT_Schema) // Choose output format
+    withJsonFormatter(EN_IT_Schema) // Choose output format
   )
 )
   .pipe(json) // Parse the output as JSON

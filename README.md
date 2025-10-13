@@ -3,7 +3,7 @@
 [![NPM Version](https://img.shields.io/npm/v/baby-prompts.svg?style=flat)](https://www.npmjs.org/package/baby-prompts)
 [![NPM Downloads](https://img.shields.io/npm/dm/baby-prompts.svg?style=flat)](https://npmcharts.com/compare/baby-prompts?minimal=true)
 
-Providing super basic prompt techniques and chains for OpenAI's response API.
+A NodeJS library providing super basic prompt techniques and chains for OpenAI's response API.
 
 - [Baby Prompts](#baby-prompts)
   - [Overview](#overview)
@@ -15,13 +15,14 @@ Providing super basic prompt techniques and chains for OpenAI's response API.
   - [Streaming](#streaming)
   - [Structured output](#structured-output)
   - [Conversational history](#conversational-history)
+  - [Notes for version 2.2.x](#notes-for-version-22x)
   - [Credits](#credits)
 
 ![example](./assets/baby-prompts.png)
 
 ## Overview
 
-👉 A NodeJS library that allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output. It also supports streaming and conversational history.
+👉 _Baby Prompts_ is a NodeJS library that allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output. It also supports streaming and conversational history.
 
 A full list of examples is available [here](examples).
 
@@ -50,12 +51,12 @@ import {
   promptChain,
   invoke,
   outputText,
-  jsonFormatter,
-  json,
   user,
   assistant,
   developer,
   tap,
+  json,
+  withJsonFormatter,
   withPreviousResponse,
 } from 'baby-prompts';
 
@@ -63,7 +64,7 @@ import {
 const prompt = getPrompt();
 
 // ...or select custom options
-const prompt = getPrompt('You are a helpful assistant.', {
+const prompt = getPrompt({
   model: 'gpt-5',
   reasoning: { effort: 'low' },
   stream: false,
@@ -88,7 +89,7 @@ Here is a simple example of invoking a prompt.
 prompt(developer('Be a funny assistant'), 'Tell me a joke') // setup the prompt
   .pipe(invoke) // execute it
   .pipe(outputText) // extract the output_text from the response
-  .pipe(console.log); // print it
+  .pipe(tap); // print it
 ```
 
 Note that the `pipe` method is basically a `then` call (i.e., method of a Promise).
@@ -100,6 +101,8 @@ const result = await invoke(
 );
 console.log(outputText(result)); // or result.output_text
 ```
+
+You can find a full working example [here](./examples/zero_shot.js).
 
 ### 2. Few-shot prompting
 
@@ -120,6 +123,8 @@ prompt(
   .pipe(outputText)
   .pipe(console.log);
 ```
+
+You can find a full working example [here](./examples/few_shot.js).
 
 ### 3. Prompt chaining
 
@@ -144,11 +149,8 @@ For more complex examples, involving the usage of the `tap` function and formatt
 When you create a prompt at first you can pass the `stream: true` option to enable streaming.
 
 ```js
-const prompt = getPrompt('You are a helpful assistant.');
-
-// Basic usage
 const stream = await prompt(developer('Write a paragraph about the ocean'))
-  .pipe(withOptions({ stream: true }))
+  .pipe(withOptions({ stream: true })) // require to have a streamed response
   .pipe(invoke);
 
 for await (const event of stream) {
@@ -156,6 +158,8 @@ for await (const event of stream) {
     process.stdout.write(event.delta);
 }
 ```
+
+This is an [example](./examples/stream.js).
 
 ## Structured output
 
@@ -178,11 +182,13 @@ prompt(
   developer('You are a helpful assistant'), //
   'Write a list of 10 people with name and age'
 )
-  .pipe(jsonFormatter(PeopleList))
+  .pipe(withJsonFormatter(PeopleList)) // format the output
   .pipe(invoke)
   .pipe(json)
   .pipe(console.log);
 ```
+
+[Here](./examples/structured_output.js) a full working example.
 
 ## Conversational history
 
@@ -191,37 +197,34 @@ You can preserve information across multiple messages or turns in a conversation
 Here a couple of examples.
 
 ```js
-import {
-  getPrompt,
-  invoke,
-  withPreviousResponse,
-  outputText,
-  promptChain,
-} from 'baby-prompts';
-
-// Get the prompt function with custom options
-const prompt = getPrompt(
-  'Do not add any explanation. Just return what you are asked for.'
-);
-
 // Get the first prompt
 const res = await prompt('My name is Jon Snow.').pipe(invoke);
 
 // Using a single prompt
-await prompt('What is my name?')
+prompt('What is my name?')
   .then(withPreviousResponse(res)) // pass in the previous response
   .then(invoke)
   .then(outputText)
   .then(console.log); // "Jon Snow"
 
 // Using a chain
-await promptChain(
+promptChain(
   prompt('What is my name?').then(withPreviousResponse(res)), // pass in the previous response
   prompt('Add an emoji to my name.')
 )
   .then(outputText)
   .then(console.log); // "Jon Snow 🐺"
 ```
+
+Here the [full example](./examples/conversation.js).
+
+## Notes for version 2.2.x
+
+There a few breaking changes from version 2.2.x onward.
+
+The function `getPrompt` now only takes as parameter the default options to tweak the model.
+
+The function `jsonFormatter` has been renamed to `withJsonFormatter` for consistency with other similar functions.
 
 ## Credits
 

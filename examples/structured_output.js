@@ -1,9 +1,15 @@
-import { getPrompt, invoke, json, jsonFormatter, developer } from '../index.js';
-// import { getPrompt, invoke, json, jsonFormatter, developer } from 'baby-prompts';
+import {
+  getPrompt,
+  invoke,
+  json,
+  withJsonFormatter,
+  developer,
+  tap,
+} from '../index.js'; //from 'baby-prompts';
 import { z } from 'zod';
 
 // Get the prompt function with custom options
-const prompt = getPrompt('You are a helpful assistant', {
+const prompt = getPrompt({
   model: 'gpt-4.1-mini',
   temperature: 0,
 }); // { model: 'gpt-5' ...}
@@ -23,7 +29,7 @@ prompt(
   developer('You are a helpful assistant'), //
   'Write a list of 10 people with name and age'
 )
-  .pipe(jsonFormatter(PeopleList))
+  .pipe(withJsonFormatter(PeopleList))
   .pipe(invoke)
   .pipe(json)
-  .pipe(console.log);
+  .pipe(tap);

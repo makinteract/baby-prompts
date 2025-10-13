@@ -8,9 +8,7 @@ import {
 // } from 'baby-prompts';
 
 // Get the prompt function with custom options
-const prompt = getPrompt(
-  'Do not add any explanation. Just return what you are asked for.'
-);
+const prompt = getPrompt();
 
 // Basic usage
 const res = await prompt('My name is Jon Snow.').pipe(invoke);

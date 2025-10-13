@@ -5,14 +5,11 @@ import {
   developer,
   user,
   assistant,
+  tap,
 } from '../index.js';
 // } from 'baby-prompts';
 
-// Get the prompt function with custom options
-const prompt = getPrompt('You are a helpful assistant.', {
-  model: 'gpt-4.1-mini',
-  temperature: 0,
-}); // { model: 'gpt-5' ...}
+const prompt = getPrompt();
 
 //  Few shot
 prompt(
@@ -27,7 +24,7 @@ prompt(
 )
   .pipe(invoke)
   .pipe(outputText)
-  .pipe(console.log);
+  .pipe(tap);
 
 // Same
 prompt(
@@ -42,4 +39,4 @@ prompt(
 )
   .pipe(invoke)
   .pipe(outputText)
-  .pipe(console.log);
+  .pipe(tap);

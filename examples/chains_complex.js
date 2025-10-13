@@ -2,7 +2,7 @@ import {
   getPrompt,
   promptChain,
   developer,
-  jsonFormatter,
+  withJsonFormatter,
   json,
   assistant,
   user,
@@ -14,7 +14,7 @@ import { z } from 'zod';
 // Get the prompt function with custom options
 const prompt = getPrompt();
 // A different prompt function with reasoning capabilities
-const reasoningPrompt = getPrompt('You are a reasoning assistant.', {
+const reasoningPrompt = getPrompt({
   model: 'gpt-5',
   reasoning: { effort: 'low' },
 });
@@ -50,7 +50,7 @@ const OutputSchema = z.object({
 
 const outputAsJSON = prompt(
   'Output the content in JSON, indicating both length and word count.'
-).pipe(jsonFormatter(OutputSchema));
+).pipe(withJsonFormatter(OutputSchema));
 
 // Chain them together
 const res = await promptChain(

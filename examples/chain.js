@@ -2,7 +2,7 @@ import {
   getPrompt,
   promptChain,
   outputText,
-  jsonFormatter,
+  withJsonFormatter,
   json,
   user,
   tap,
@@ -11,7 +11,7 @@ import {
 
 import { z } from 'zod';
 // Get the prompt function with custom options
-const prompt = getPrompt('Answer without providing any explanation.', {
+const prompt = getPrompt({
   model: 'gpt-4.1-mini',
   temperature: 0,
 }); // { model: 'gpt-5' ...}
@@ -35,7 +35,7 @@ promptChain(
   prompt(user('What is 1+1?')), //
   prompt(user('Say that in Italian and without using numbers.')).pipe(tap), // tap let you see the intermediate result
   prompt(user('Add an emoji at the end.')).pipe(
-    jsonFormatter(AnswerSchema) // last prompt output formatting
+    withJsonFormatter(AnswerSchema) // last prompt output formatting
   )
 )
   .pipe(json)

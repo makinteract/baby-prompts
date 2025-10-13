@@ -63,7 +63,7 @@ export const json = (response) => {
   return JSON.parse(response.output_text);
 };
 
-export const jsonFormatter = (schema) => (params) => {
+export const withJsonFormatter = (schema) => (params) => {
   InputField.parse(params);
   return Promise.resolve(params).then((p) => {
     p.input.unshift(developer('Output JSON'));
@@ -104,18 +104,13 @@ export function invoke(params) {
   return Promise.resolve(params).then((res) => client.responses.create(res));
 }
 
-export function getPrompt(
-  instructions = 'You are a helpful assistant.',
-  options = {}
-) {
-  InputText.parse(instructions);
+export function getPrompt(options = {}) {
   OptionsSchema.parse(options);
 
   return (...messages) => {
     z.array(z.union([MessageSchema, InputText])).parse(messages);
 
     messages = messages.map((m) => (typeof m === 'string' ? user(m) : m));
-    messages.unshift(developer(instructions));
 
     const p = Promise.resolve({
       model: 'gpt-4.1-mini',

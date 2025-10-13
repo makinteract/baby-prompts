@@ -100,7 +100,7 @@ export function json(response: Response): Object | never;
  * @returns A function that takes PromptParams and returns a Promise of PromptParams with validated text.
  * @throws Propagates any error encountered during validation.
  */
-export function jsonFormatter(
+export function withJsonFormatter(
   schema: ZodAny
 ): (params: PromptParams) => Promise<PromptParams> | never;
 
@@ -132,13 +132,9 @@ export function invoke(params: PromptParams): Promise<Response> | never;
 
 /**
  * Get a prompt function with the specified instructions and options.
- * @param instructions Default instructions for the model.
  * @param options Options for configuring the model prompt.
  */
-export function getPrompt(
-  instructions: string = 'You are a helpful assistant.',
-  options: Options = {}
-): Pipeable | never;
+export function getPrompt(options: Options = {}): Pipeable | never;
 
 /**
  * Chain multiple prompts together, passing the response of one as the input to the next.
