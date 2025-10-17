@@ -3,7 +3,7 @@ import { getPrompt, invoke, withOptions, developer } from '../index.js'; //from 
 const prompt = getPrompt();
 
 // Basic usage
-const stream = await prompt(developer('Write a paragraph about the ocean'))
+const stream = await prompt(user('Write a paragraph about the ocean'))
   .pipe(withOptions({ stream: true }))
   .pipe(invoke);
 
