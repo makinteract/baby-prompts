@@ -24,7 +24,7 @@ A NodeJS library providing super basic prompt techniques and chains for OpenAI's
 
 👉 _Baby Prompts_ is a NodeJS library that allows you to easily create different prompt techniques (see [below](#prompt-techniques-examples)) and choose formatting output. It also supports streaming and conversational history.
 
-A full list of examples is available [here](examples).
+A full list of examples is available [here](examples), and [this is a tutorial article](https://medium.com/@andrea_36977/baby-steps-with-prompting-techniques-in-javascript-fb8ad332cf71) to help you with the setup and explain the different prompting techniques.
 
 ## Installation
 
