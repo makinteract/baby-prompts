@@ -19,7 +19,7 @@ const OptionsSchema = z.object({
 });
 
 const ResponseSchema = z.object({
-  output_text: InputText,
+  output_text: InputText.optional(),
   id: InputText,
 });
 

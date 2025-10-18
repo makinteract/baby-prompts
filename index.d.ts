@@ -20,7 +20,8 @@ export interface Message {
  * The response object returned by the model.
  */
 export interface Response {
-  output_text: string;
+  output_text?: string;
+  id: string;
 }
 
 /**
